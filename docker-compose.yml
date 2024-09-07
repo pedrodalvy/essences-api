@@ -28,3 +28,9 @@ services:
       - essences-api
     env_file:
       - .env
+
+  cache:
+    container_name: cache
+    image: 'redis:7.4.0-alpine3.20'
+    networks:
+      - essences-api

@@ -27,6 +27,7 @@ describe('Essences (E2E)', () => {
   });
 
   afterEach(async () => {
+    jest.clearAllMocks();
     await app.close();
   });
 
@@ -47,6 +48,22 @@ describe('Essences (E2E)', () => {
       expect(response.status).toBe(HttpStatus.OK);
       expect(response.body).toEqual(expectedOutput);
     });
+
+    it('should cache the response of list essences', async () => {
+      // ARRANGE
+      const expectedOutput = listEssencesOutputMock();
+      httpService.get.mockImplementationOnce(() =>
+        axiosResponseMock({ responseData: expectedOutput }),
+      );
+
+      // ACT
+      await request(app.getHttpServer()).get('/api/v1/essences');
+      await request(app.getHttpServer()).get('/api/v1/essences');
+      await request(app.getHttpServer()).get('/api/v1/essences');
+
+      // ASSERT
+      expect(httpService.get).toHaveBeenCalledTimes(1);
+    });
   });
 
   describe('describeEssence (GET)', () => {
@@ -65,6 +82,22 @@ describe('Essences (E2E)', () => {
       // ASSERT
       expect(response.status).toBe(HttpStatus.OK);
       expect(response.body).toEqual(expectedOutput);
+    });
+
+    it('should cache the response of describe essence', async () => {
+      // ARRANGE
+      const expectedOutput = describeEssenceOutputMock();
+      httpService.get.mockImplementationOnce(() =>
+        axiosResponseMock({ responseData: expectedOutput }),
+      );
+
+      // ACT
+      await request(app.getHttpServer()).get('/api/v1/essences/SI');
+      await request(app.getHttpServer()).get('/api/v1/essences/SI');
+      await request(app.getHttpServer()).get('/api/v1/essences/SI');
+
+      // ASSERT
+      expect(httpService.get).toHaveBeenCalledTimes(1);
     });
   });
 });
