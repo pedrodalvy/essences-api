@@ -1,4 +1,4 @@
-import { Controller, Get } from '@nestjs/common';
+import { Controller, Get, Param } from '@nestjs/common';
 import { EssencesService } from './essences.service';
 import { ListEssencesOutput } from './dto/list-essences.output';
 import { DescribeEssenceOutput } from './dto/describe-essence.output';
@@ -13,7 +13,7 @@ export class EssencesController {
   }
 
   @Get(':id')
-  describeEssence(id: string): Promise<DescribeEssenceOutput> {
+  describeEssence(@Param('id') id: string): Promise<DescribeEssenceOutput> {
     return this.essencesService.describeEssence(id);
   }
 }

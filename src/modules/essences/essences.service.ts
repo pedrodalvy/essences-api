@@ -13,6 +13,6 @@ export class EssencesService {
   }
 
   async describeEssence(id: string): Promise<DescribeEssenceOutput> {
-    return { id } as DescribeEssenceOutput;
+    return this.gbClient.describeEssence(id);
   }
 }

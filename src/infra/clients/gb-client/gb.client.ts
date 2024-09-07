@@ -5,6 +5,7 @@ import { HttpService } from '@nestjs/axios';
 import { ConfigService } from '@nestjs/config';
 import { GBClientConstants } from './gb.client.constants';
 import { firstValueFrom } from 'rxjs';
+import { DescribeEssenceOutputInterface } from './dto/describe-essence.output.interface';
 
 @Injectable()
 export class GBClient implements GBClientInterface {
@@ -23,6 +24,17 @@ export class GBClient implements GBClientInterface {
     const apiURL = `${this.baseUrl}/v1/essences-challenge/essences`;
     const { data } = await firstValueFrom(
       this.httpService.get<ListEssencesOutputInterface[]>(apiURL, {
+        headers: { Authorization: `Basic ${this.authToken}` },
+      }),
+    );
+
+    return data;
+  }
+
+  async describeEssence(id: string): Promise<DescribeEssenceOutputInterface> {
+    const apiURL = `${this.baseUrl}/v1/essences-challenge/essences/${id}`;
+    const { data } = await firstValueFrom(
+      this.httpService.get<DescribeEssenceOutputInterface>(apiURL, {
         headers: { Authorization: `Basic ${this.authToken}` },
       }),
     );

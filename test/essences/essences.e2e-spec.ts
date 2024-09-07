@@ -50,9 +50,12 @@ describe('Essences (E2E)', () => {
   });
 
   describe('describeEssence (GET)', () => {
-    it.skip('should describe essence with success', async () => {
+    it('should describe essence with success', async () => {
       // ARRANGE
       const expectedOutput = describeEssenceOutputMock();
+      httpService.get.mockImplementationOnce(() =>
+        axiosResponseMock({ responseData: expectedOutput }),
+      );
 
       // ACT
       const response = await request(app.getHttpServer()).get(

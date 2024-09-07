@@ -7,6 +7,7 @@ import { GBClient } from '../gb.client';
 import { listEssencesOutputMock } from '../../../../modules/essences/tests/mocks/list-essences.output.mock';
 import { axiosResponseMock } from './mocks/axios.response.mock';
 import { GBClientConstants } from '../gb.client.constants';
+import { describeEssenceOutputMock } from '../../../../modules/essences/tests/mocks/describe-essence.output.mock';
 
 describe('GBClient', () => {
   let gbClient: GBClientInterface;
@@ -58,6 +59,40 @@ describe('GBClient', () => {
 
       // ACT
       await gbClient.listEssences();
+
+      // ASSERT
+      expect(httpService.get).toHaveBeenCalledWith(expectedURL, {
+        headers: { Authorization: `Basic ${mockedToken}` },
+      });
+    });
+  });
+
+  describe('describeEssence', () => {
+    it('should describe essence with success', async () => {
+      // ARRANGE
+      const expectedOutput = describeEssenceOutputMock();
+      httpService.get.mockImplementationOnce(() =>
+        axiosResponseMock({ responseData: expectedOutput }),
+      );
+
+      // ACT
+      const result = await gbClient.describeEssence('any-id');
+
+      // ASSERT
+      expect(result).toEqual(expectedOutput);
+    });
+
+    it('should call api wit correct config params', async () => {
+      // ARRANGE
+      httpService.get.mockImplementationOnce(() =>
+        axiosResponseMock({ responseData: {} }),
+      );
+
+      const id = 'essence-id';
+      const expectedURL = `${mockedURL}/v1/essences-challenge/essences/${id}`;
+
+      // ACT
+      await gbClient.describeEssence(id);
 
       // ASSERT
       expect(httpService.get).toHaveBeenCalledWith(expectedURL, {
