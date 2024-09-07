@@ -14,4 +14,4 @@ logs:
 
 test-e2e:
 	make dev
-	docker compose run --rm app_dev yarn test:e2e
+	docker compose run --rm app_dev yarn test:e2e --verbose

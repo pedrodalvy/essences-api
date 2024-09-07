@@ -6,6 +6,7 @@ import { CacheInterceptor, CacheModule } from '@nestjs/cache-manager';
 import { RedisClientOptions } from 'redis';
 import { APP_INTERCEPTOR } from '@nestjs/core';
 import { AppConstants } from './app.constants';
+import { AuthModule } from './modules/auth/auth.module';
 
 @Module({
   imports: [
@@ -21,6 +22,7 @@ import { AppConstants } from './app.constants';
     }),
     ClientsModule,
     EssencesModule,
+    AuthModule,
   ],
   providers: [{ provide: APP_INTERCEPTOR, useClass: CacheInterceptor }],
 })
