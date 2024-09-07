@@ -1,0 +1,30 @@
+networks:
+  essences-api:
+    name: 'essences-api'
+
+services:
+  app_dev:
+    container_name: app
+    working_dir: /app
+    command: sh -c "yarn start:dev"
+    build:
+      context: .
+      args:
+        BUILD_STAGE: development
+    ports:
+      - '${PORT:-3000}:3000'
+    volumes:
+      - .:/app
+    networks:
+      - essences-api
+
+  app_prod:
+    container_name: app
+    build:
+      context: .
+    ports:
+      - '${PORT:-3000}:3000'
+    networks:
+      - essences-api
+    env_file:
+      - .env
