@@ -22,7 +22,7 @@ describe('EssencesController', () => {
     it('should list essences with success', async () => {
       // ARRANGE
       const expectedOutput = listEssencesOutputMock();
-      essencesService.listEssences.mockResolvedValue(expectedOutput);
+      essencesService.listEssences.mockResolvedValueOnce(expectedOutput);
 
       // ACT
       const result = await essencesController.listEssences();
@@ -36,7 +36,7 @@ describe('EssencesController', () => {
     it('should describe essence with success', async () => {
       // ARRANGE
       const expectedOutput = describeEssenceOutputMock();
-      essencesService.describeEssence.mockResolvedValue(expectedOutput);
+      essencesService.describeEssence.mockResolvedValueOnce(expectedOutput);
 
       // ACT
       const result = await essencesController.describeEssence('any-id');

@@ -1,12 +1,17 @@
 import { Test } from '@nestjs/testing';
 import { EssencesService } from '../essences.service';
+import { mock } from 'jest-mock-extended';
+import { GBClientInterface } from '../../../infra/clients/gb-client/gb.client.interface';
+import { GBClient } from '../../../infra/clients/gb-client/gb.client';
+import { listEssencesOutputMock } from './mocks/list-essences.output.mock';
 
 describe('EssencesService', () => {
   let essencesService: EssencesService;
+  const gbClient = mock<GBClientInterface>();
 
   beforeEach(async () => {
     const app = await Test.createTestingModule({
-      providers: [EssencesService],
+      providers: [EssencesService, { provide: GBClient, useValue: gbClient }],
     }).compile();
 
     essencesService = app.get(EssencesService);
@@ -15,7 +20,8 @@ describe('EssencesService', () => {
   describe('listEssences', () => {
     it('should list essences with success', async () => {
       // ARRANGE
-      const expectedOutput = [];
+      const expectedOutput = listEssencesOutputMock();
+      gbClient.listEssences.mockResolvedValueOnce(expectedOutput);
 
       // ACT
       const result = await essencesService.listEssences();
