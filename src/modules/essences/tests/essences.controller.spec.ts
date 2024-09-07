@@ -3,6 +3,7 @@ import { EssencesController } from '../essences.controller';
 import { mock } from 'jest-mock-extended';
 import { Test } from '@nestjs/testing';
 import { listEssencesOutputMock } from './mocks/list-essences.output.mock';
+import { describeEssenceOutputMock } from './mocks/describe-essence.output.mock';
 
 describe('EssencesController', () => {
   let essencesController: EssencesController;
@@ -25,6 +26,20 @@ describe('EssencesController', () => {
 
       // ACT
       const result = await essencesController.listEssences();
+
+      // ASSERT
+      expect(result).toEqual(expectedOutput);
+    });
+  });
+
+  describe('describeEssence', () => {
+    it('should describe essence with success', async () => {
+      // ARRANGE
+      const expectedOutput = describeEssenceOutputMock();
+      essencesService.describeEssence.mockResolvedValue(expectedOutput);
+
+      // ACT
+      const result = await essencesController.describeEssence('any-id');
 
       // ASSERT
       expect(result).toEqual(expectedOutput);

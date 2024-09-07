@@ -24,4 +24,17 @@ describe('EssencesService', () => {
       expect(result).toEqual(expectedOutput);
     });
   });
+
+  describe('describeEssence', () => {
+    it('should describe essence with success', async () => {
+      // ARRANGE
+      const expectedOutput = { id: 'SI' };
+
+      // ACT
+      const result = await essencesService.describeEssence('SI');
+
+      // ASSERT
+      expect(result).toEqual(expectedOutput);
+    });
+  });
 });
