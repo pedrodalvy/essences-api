@@ -8,9 +8,12 @@ import { appConfig } from '../../src/app.config';
 import { describeEssenceOutputMock } from '../../src/modules/essences/tests/mocks/describe-essence.output.mock';
 import { HttpService } from '@nestjs/axios';
 import { axiosResponseMock } from '../../src/infra/clients/gb-client/tests/mocks/axios.response.mock';
+import { Cache } from 'cache-manager';
+import { CACHE_MANAGER } from '@nestjs/cache-manager';
 
 describe('Essences (E2E)', () => {
   let app: INestApplication;
+  let cacheManager: Cache;
   const httpService = mock<HttpService>();
 
   beforeEach(async () => {
@@ -23,10 +26,13 @@ describe('Essences (E2E)', () => {
 
     app = moduleFixture.createNestApplication();
     appConfig(app);
+
+    cacheManager = app.get<Cache>(CACHE_MANAGER);
     await app.init();
   });
 
   afterEach(async () => {
+    await cacheManager.reset();
     jest.clearAllMocks();
     await app.close();
   });

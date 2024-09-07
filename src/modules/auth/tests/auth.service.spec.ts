@@ -1,13 +1,18 @@
 import { Test } from '@nestjs/testing';
 import { AuthService } from '../auth.service';
-import { BadRequestException } from '@nestjs/common';
+import { BadRequestException, UnauthorizedException } from '@nestjs/common';
+import { CacheClientInterface } from '../../../infra/clients/cache-client/cache.client.interface';
+import { mock } from 'jest-mock-extended';
+import { CacheClient } from '../../../infra/clients/cache-client/cache.client';
+import { AuthConstants } from '../auth.constants';
 
 describe('AuthService', () => {
   let authService: AuthService;
+  const cacheClient = mock<CacheClientInterface>();
 
   beforeEach(async () => {
     const app = await Test.createTestingModule({
-      providers: [AuthService],
+      providers: [AuthService, { provide: CacheClient, useValue: cacheClient }],
     }).compile();
 
     authService = app.get(AuthService);
@@ -17,23 +22,77 @@ describe('AuthService', () => {
     it('should sign up with success', async () => {
       // ARRANGE
       const input = { user: 'user', password: 'password' };
+      const expectedCacheKey = `${AuthConstants.CACHE_PREFIX}:${input.user}`;
 
       // ACT
       await authService.signUp(input);
 
       // ASSERT
-      expect(1).toBe(1); // Will change when cache client is implemented
+      expect(cacheClient.set).toHaveBeenCalledWith({
+        key: expectedCacheKey,
+        value: input.password,
+      });
     });
 
     it('should throw a bad request error when user already exists', async () => {
       // ARRANGE
       const input = { user: 'user', password: 'password' };
       await authService.signUp(input);
+      cacheClient.get.mockResolvedValueOnce(input.password);
 
       const expectedError = new BadRequestException('User already exists');
 
       // ACT
       const promise = authService.signUp(input);
+
+      // ASSERT
+      await expect(promise).rejects.toThrow(expectedError);
+    });
+  });
+
+  describe('signIn', () => {
+    it('should sign in with success', async () => {
+      // ARRANGE
+      const input = { user: 'user', password: 'password' };
+
+      const expectedCacheKey = `${AuthConstants.CACHE_PREFIX}:${input.user}`;
+      cacheClient.get.mockResolvedValueOnce(input.password);
+
+      const expectedOutput = { token: 'token', ttl: 3600 };
+
+      // ACT
+      const result = await authService.signIn(input);
+
+      // ASSERT
+      expect(cacheClient.get).toHaveBeenCalledWith(expectedCacheKey);
+      expect(result).toEqual(expectedOutput);
+    });
+
+    it('should throw a bad request error when credentials are invalid', async () => {
+      // ARRANGE
+      cacheClient.get.mockResolvedValueOnce('invalid');
+      const expectedError = new UnauthorizedException('Invalid credentials');
+
+      // ACT
+      const promise = authService.signIn({
+        user: 'user',
+        password: 'password',
+      });
+
+      // ASSERT
+      await expect(promise).rejects.toThrow(expectedError);
+    });
+
+    it('should throw a bad request error when credentials are not found', async () => {
+      // ARRANGE
+      cacheClient.get.mockResolvedValueOnce(undefined);
+      const expectedError = new BadRequestException('Invalid credentials');
+
+      // ACT
+      const promise = authService.signIn({
+        user: 'user',
+        password: 'password',
+      });
 
       // ASSERT
       await expect(promise).rejects.toThrow(expectedError);

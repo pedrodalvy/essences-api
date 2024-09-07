@@ -7,6 +7,7 @@ import { RedisClientOptions } from 'redis';
 import { APP_INTERCEPTOR } from '@nestjs/core';
 import { AppConstants } from './app.constants';
 import { AuthModule } from './modules/auth/auth.module';
+import * as redisStore from 'cache-manager-redis-store';
 
 @Module({
   imports: [
@@ -14,7 +15,9 @@ import { AuthModule } from './modules/auth/auth.module';
     CacheModule.registerAsync<RedisClientOptions>({
       imports: [ConfigModule],
       inject: [ConfigService],
+      isGlobal: true,
       useFactory: async (configService: ConfigService) => ({
+        store: redisStore,
         ttl: Number(configService.get(AppConstants.CACHE_TTL)),
         host: configService.get(AppConstants.REDIS_HOST),
         port: Number(configService.get(AppConstants.REDIS_PORT)),
