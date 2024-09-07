@@ -5,6 +5,7 @@ import { ConfigModule, ConfigService } from '@nestjs/config';
 import { CacheInterceptor, CacheModule } from '@nestjs/cache-manager';
 import { RedisClientOptions } from 'redis';
 import { APP_INTERCEPTOR } from '@nestjs/core';
+import { AppConstants } from './app.constants';
 
 @Module({
   imports: [
@@ -13,9 +14,9 @@ import { APP_INTERCEPTOR } from '@nestjs/core';
       imports: [ConfigModule],
       inject: [ConfigService],
       useFactory: async (configService: ConfigService) => ({
-        ttl: Number(configService.get('CACHE_TTL_IN_MS')),
-        host: configService.get('REDIS_HOST'),
-        port: Number(configService.get('REDIS_PORT')),
+        ttl: Number(configService.get(AppConstants.CACHE_TTL)),
+        host: configService.get(AppConstants.REDIS_HOST),
+        port: Number(configService.get(AppConstants.REDIS_PORT)),
       }),
     }),
     ClientsModule,
