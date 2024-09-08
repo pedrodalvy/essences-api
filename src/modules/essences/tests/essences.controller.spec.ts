@@ -1,7 +1,6 @@
 import { EssencesService } from '../essences.service';
 import { EssencesController } from '../essences.controller';
 import { mock } from 'jest-mock-extended';
-import { Test } from '@nestjs/testing';
 import { listEssencesOutputMock } from './mocks/list-essences.output.mock';
 import { describeEssenceOutputMock } from './mocks/describe-essence.output.mock';
 
@@ -10,12 +9,7 @@ describe('EssencesController', () => {
   const essencesService = mock<EssencesService>();
 
   beforeEach(async () => {
-    const app = await Test.createTestingModule({
-      controllers: [EssencesController],
-      providers: [{ provide: EssencesService, useValue: essencesService }],
-    }).compile();
-
-    essencesController = app.get(EssencesController);
+    essencesController = new EssencesController(essencesService);
   });
 
   describe('listEssences', () => {
