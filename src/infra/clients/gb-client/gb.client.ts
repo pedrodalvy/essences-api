@@ -1,11 +1,17 @@
 import { ListEssencesOutputInterface } from './dto/list-essences.output.interface';
 import { GBClientInterface } from './gb.client.interface';
-import { Injectable } from '@nestjs/common';
+import {
+  HttpStatus,
+  Injectable,
+  InternalServerErrorException,
+  NotFoundException,
+} from '@nestjs/common';
 import { HttpService } from '@nestjs/axios';
 import { ConfigService } from '@nestjs/config';
 import { GBClientConstants } from './gb.client.constants';
 import { firstValueFrom } from 'rxjs';
 import { DescribeEssenceOutputInterface } from './dto/describe-essence.output.interface';
+import { AxiosError } from 'axios';
 
 @Injectable()
 export class GBClient implements GBClientInterface {
@@ -33,12 +39,23 @@ export class GBClient implements GBClientInterface {
 
   async describeEssence(id: string): Promise<DescribeEssenceOutputInterface> {
     const apiURL = `${this.baseUrl}/v1/essences-challenge/essences/${id}`;
-    const { data } = await firstValueFrom(
-      this.httpService.get<DescribeEssenceOutputInterface>(apiURL, {
-        headers: { Authorization: `Basic ${this.authToken}` },
-      }),
-    );
 
-    return data;
+    try {
+      const { data } = await firstValueFrom(
+        this.httpService.get<DescribeEssenceOutputInterface>(apiURL, {
+          headers: { Authorization: `Basic ${this.authToken}` },
+        }),
+      );
+
+      return data;
+    } catch (error: AxiosError | any) {
+      if (error instanceof AxiosError) {
+        if (error.response?.status === HttpStatus.NOT_FOUND) {
+          throw new NotFoundException('Essence not found');
+        }
+      }
+
+      throw new InternalServerErrorException();
+    }
   }
 }

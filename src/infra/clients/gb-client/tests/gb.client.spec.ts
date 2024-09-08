@@ -8,6 +8,12 @@ import { listEssencesOutputMock } from '../../../../modules/essences/tests/mocks
 import { axiosResponseMock } from './mocks/axios.response.mock';
 import { GBClientConstants } from '../gb.client.constants';
 import { describeEssenceOutputMock } from '../../../../modules/essences/tests/mocks/describe-essence.output.mock';
+import { AxiosError, AxiosResponse, InternalAxiosRequestConfig } from 'axios';
+import {
+  HttpStatus,
+  InternalServerErrorException,
+  NotFoundException,
+} from '@nestjs/common';
 
 describe('GBClient', () => {
   let gbClient: GBClientInterface;
@@ -98,6 +104,48 @@ describe('GBClient', () => {
       expect(httpService.get).toHaveBeenCalledWith(expectedURL, {
         headers: { Authorization: `Basic ${mockedToken}` },
       });
+    });
+
+    it('should throw NotFoundException when api returns 404', async () => {
+      // ARRANGE
+      const errorMock = new AxiosError(
+        '',
+        '',
+        {} as InternalAxiosRequestConfig,
+        {},
+        { status: HttpStatus.NOT_FOUND } as AxiosResponse,
+      );
+
+      httpService.get.mockImplementationOnce(() => {
+        throw errorMock;
+      });
+
+      // ACT
+      const promise = gbClient.describeEssence('any-id');
+
+      // ASSERT
+      await expect(promise).rejects.toThrow(NotFoundException);
+    });
+
+    it('should throw InternalServerErrorException when api returns any other error', async () => {
+      // ARRANGE
+      const errorMock = new AxiosError(
+        '',
+        '',
+        {} as InternalAxiosRequestConfig,
+        {},
+        { status: HttpStatus.UNAUTHORIZED } as AxiosResponse,
+      );
+
+      httpService.get.mockImplementationOnce(() => {
+        throw errorMock;
+      });
+
+      // ACT
+      const promise = gbClient.describeEssence('any-id');
+
+      // ASSERT
+      await expect(promise).rejects.toThrow(InternalServerErrorException);
     });
   });
 });
