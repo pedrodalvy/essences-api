@@ -1,7 +1,7 @@
 import { HttpStatus, INestApplication } from '@nestjs/common';
 import { Test, TestingModule } from '@nestjs/testing';
-import { AppModule } from '../../src/app.module';
-import { appConfig } from '../../src/app.config';
+import { AppModule } from '../../src/app/app.module';
+import { appConfig } from '../../src/app/app.config';
 import * as request from 'supertest';
 import { Cache } from 'cache-manager';
 import { CACHE_MANAGER } from '@nestjs/cache-manager';

@@ -1,10 +1,10 @@
 import { HttpStatus, INestApplication } from '@nestjs/common';
 import { Test, TestingModule } from '@nestjs/testing';
-import { AppModule } from '../../src/app.module';
+import { AppModule } from '../../src/app/app.module';
 import * as request from 'supertest';
 import { mock } from 'jest-mock-extended';
 import { listEssencesOutputMock } from '../../src/modules/essences/tests/mocks/list-essences.output.mock';
-import { appConfig } from '../../src/app.config';
+import { appConfig } from '../../src/app/app.config';
 import { describeEssenceOutputMock } from '../../src/modules/essences/tests/mocks/describe-essence.output.mock';
 import { HttpService } from '@nestjs/axios';
 import { axiosResponseMock } from '../../src/infra/clients/gb-client/tests/mocks/axios.response.mock';
@@ -94,7 +94,6 @@ describe('Essences (E2E)', () => {
       expect(response.status).toBe(HttpStatus.UNAUTHORIZED);
       expect(response.body).toEqual({
         statusCode: HttpStatus.UNAUTHORIZED,
-        error: 'Unauthorized',
         message: 'Invalid token',
       });
     });
@@ -179,7 +178,6 @@ describe('Essences (E2E)', () => {
       expect(response.status).toBe(HttpStatus.UNAUTHORIZED);
       expect(response.body).toEqual({
         statusCode: HttpStatus.UNAUTHORIZED,
-        error: 'Unauthorized',
         message: 'Invalid token',
       });
     });

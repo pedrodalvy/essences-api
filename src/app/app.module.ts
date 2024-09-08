@@ -1,12 +1,12 @@
 import { Module } from '@nestjs/common';
-import { EssencesModule } from './modules/essences/essences.module';
-import { ClientsModule } from './infra/clients/clients.module';
+import { EssencesModule } from '../modules/essences/essences.module';
+import { ClientsModule } from '../infra/clients/clients.module';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { CacheInterceptor, CacheModule } from '@nestjs/cache-manager';
 import { RedisClientOptions } from 'redis';
 import { APP_GUARD, APP_INTERCEPTOR } from '@nestjs/core';
 import { AppConstants } from './app.constants';
-import { AuthModule } from './modules/auth/auth.module';
+import { AuthModule } from '../modules/auth/auth.module';
 import * as redisStore from 'cache-manager-redis-store';
 import { ThrottlerGuard, ThrottlerModule } from '@nestjs/throttler';
 import { ThrottlerStorageRedisService } from '@nest-lab/throttler-storage-redis';

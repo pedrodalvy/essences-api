@@ -83,8 +83,7 @@
       "!**/dto/**",
       "!**/*.module.ts",
       "!**/*.mock.ts",
-      "!**/app.config.ts",
-      "!**/app.constants.ts",
+      "!**/app/**",
       "!**/main.ts"
     ],
     "coverageDirectory": "../coverage",
