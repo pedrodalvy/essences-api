@@ -10,11 +10,17 @@ import { SignInInput } from './dto/sign-in.input';
 import { CacheClientInterface } from '../../infra/clients/cache-client/cache.client.interface';
 import { CacheClient } from '../../infra/clients/cache-client/cache.client';
 import { AuthConstants } from './auth.constants';
+import { EncryptionClient } from '../../infra/clients/encryption-client/encryption.client';
+import { EncryptionClientInterface } from '../../infra/clients/encryption-client/encryption.client.interface';
 
 @Injectable()
 export class AuthService {
   constructor(
-    @Inject(CacheClient) private readonly cacheClient: CacheClientInterface,
+    @Inject(CacheClient)
+    private readonly cacheClient: CacheClientInterface,
+
+    @Inject(EncryptionClient)
+    private readonly encryptionClient: EncryptionClientInterface,
   ) {}
 
   async signUp({ user, password }: SignUpInput): Promise<void> {
@@ -25,14 +31,24 @@ export class AuthService {
       throw new BadRequestException('User already exists');
     }
 
-    await this.cacheClient.set({ key, value: password });
+    const encryptedPassword = await this.encryptionClient.encrypt(password);
+    await this.cacheClient.set({ key, value: encryptedPassword });
   }
 
   async signIn({ user, password }: SignInInput): Promise<SignInOutput> {
     const key = `${AuthConstants.CACHE_PREFIX}:${user}`;
     const credential = await this.cacheClient.get(key);
 
-    if (!credential || credential !== password) {
+    if (!credential) {
+      throw new UnauthorizedException('Invalid credentials');
+    }
+
+    const isValidPassword = await this.encryptionClient.compare({
+      value: password,
+      hash: credential,
+    });
+
+    if (!isValidPassword) {
       throw new UnauthorizedException('Invalid credentials');
     }
 

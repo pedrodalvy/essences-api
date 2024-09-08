@@ -5,14 +5,21 @@ import { CacheClientInterface } from '../../../infra/clients/cache-client/cache.
 import { mock } from 'jest-mock-extended';
 import { CacheClient } from '../../../infra/clients/cache-client/cache.client';
 import { AuthConstants } from '../auth.constants';
+import { EncryptionClientInterface } from '../../../infra/clients/encryption-client/encryption.client.interface';
+import { EncryptionClient } from '../../../infra/clients/encryption-client/encryption.client';
 
 describe('AuthService', () => {
   let authService: AuthService;
   const cacheClient = mock<CacheClientInterface>();
+  const encryptionClient = mock<EncryptionClientInterface>();
 
   beforeEach(async () => {
     const app = await Test.createTestingModule({
-      providers: [AuthService, { provide: CacheClient, useValue: cacheClient }],
+      providers: [
+        AuthService,
+        { provide: CacheClient, useValue: cacheClient },
+        { provide: EncryptionClient, useValue: encryptionClient },
+      ],
     }).compile();
 
     authService = app.get(AuthService);
@@ -23,6 +30,7 @@ describe('AuthService', () => {
       // ARRANGE
       const input = { user: 'user', password: 'password' };
       const expectedCacheKey = `${AuthConstants.CACHE_PREFIX}:${input.user}`;
+      encryptionClient.encrypt.mockResolvedValueOnce(input.password);
 
       // ACT
       await authService.signUp(input);
@@ -57,6 +65,7 @@ describe('AuthService', () => {
 
       const expectedCacheKey = `${AuthConstants.CACHE_PREFIX}:${input.user}`;
       cacheClient.get.mockResolvedValueOnce(input.password);
+      encryptionClient.compare.mockResolvedValueOnce(true);
 
       const expectedOutput = { token: 'token', ttl: 3600 };
 
@@ -70,7 +79,8 @@ describe('AuthService', () => {
 
     it('should throw a bad request error when credentials are invalid', async () => {
       // ARRANGE
-      cacheClient.get.mockResolvedValueOnce('invalid');
+      cacheClient.get.mockResolvedValueOnce('password');
+      encryptionClient.compare.mockResolvedValueOnce(false);
       const expectedError = new UnauthorizedException('Invalid credentials');
 
       // ACT

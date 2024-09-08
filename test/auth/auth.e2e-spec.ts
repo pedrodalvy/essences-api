@@ -6,10 +6,13 @@ import * as request from 'supertest';
 import { Cache } from 'cache-manager';
 import { CACHE_MANAGER } from '@nestjs/cache-manager';
 import { AuthConstants } from '../../src/modules/auth/auth.constants';
+import { EncryptionClientInterface } from '../../src/infra/clients/encryption-client/encryption.client.interface';
+import { EncryptionClient } from '../../src/infra/clients/encryption-client/encryption.client';
 
 describe('Auth (E2E)', () => {
   let app: INestApplication;
   let cacheManager: Cache;
+  let encryptionClient: EncryptionClientInterface;
 
   beforeEach(async () => {
     const moduleFixture: TestingModule = await Test.createTestingModule({
@@ -20,6 +23,7 @@ describe('Auth (E2E)', () => {
     appConfig(app);
 
     cacheManager = app.get<Cache>(CACHE_MANAGER);
+    encryptionClient = app.get<EncryptionClientInterface>(EncryptionClient);
     await app.init();
   });
 
@@ -72,9 +76,10 @@ describe('Auth (E2E)', () => {
       const endpoint = '/api/v1/auth/sign-in';
       const input = { user: 'user', password: 'password' };
 
+      const encryptedPassword = await encryptionClient.encrypt(input.password);
       cacheManager.set(
         `${AuthConstants.CACHE_PREFIX}:${input.user}`,
-        input.password,
+        encryptedPassword,
       );
 
       // ACT
