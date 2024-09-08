@@ -41,9 +41,7 @@ describe('Auth (E2E)', () => {
       const endpoint = '/api/v1/auth/sign-up';
 
       // ACT
-      const response = await request(app.getHttpServer())
-        .post(endpoint)
-        .send(input);
+      const response = await request(app.getHttpServer()).post(endpoint).send(input);
 
       // ASSERT
       expect(response.status).toBe(HttpStatus.CREATED);
@@ -54,17 +52,12 @@ describe('Auth (E2E)', () => {
       const endpoint = '/api/v1/auth/sign-up';
       const input = { user: 'user', password: 'password' };
 
-      cacheManager.set(
-        `${AuthConstants.CACHE_PREFIX}:${input.user}`,
-        input.password,
-      );
+      cacheManager.set(`${AuthConstants.CACHE_PREFIX}:${input.user}`, input.password);
 
       await request(app.getHttpServer()).post(endpoint).send(input);
 
       // ACT
-      const response = await request(app.getHttpServer())
-        .post(endpoint)
-        .send(input);
+      const response = await request(app.getHttpServer()).post(endpoint).send(input);
 
       // ASSERT
       expect(response.status).toBe(HttpStatus.BAD_REQUEST);
@@ -79,15 +72,10 @@ describe('Auth (E2E)', () => {
       const input = { user: 'user', password: 'password' };
 
       const encryptedPassword = await encryptionClient.encrypt(input.password);
-      cacheManager.set(
-        `${AuthConstants.CACHE_PREFIX}:${input.user}`,
-        encryptedPassword,
-      );
+      cacheManager.set(`${AuthConstants.CACHE_PREFIX}:${input.user}`, encryptedPassword);
 
       // ACT
-      const response = await request(app.getHttpServer())
-        .post(endpoint)
-        .send(input);
+      const response = await request(app.getHttpServer()).post(endpoint).send(input);
 
       // ASSERT
       expect(response.status).toBe(HttpStatus.OK);
@@ -100,15 +88,10 @@ describe('Auth (E2E)', () => {
       const endpoint = '/api/v1/auth/sign-in';
       const input = { user: 'user', password: 'password' };
 
-      cacheManager.set(
-        `${AuthConstants.CACHE_PREFIX}:${input.user}`,
-        'invalid',
-      );
+      cacheManager.set(`${AuthConstants.CACHE_PREFIX}:${input.user}`, 'invalid');
 
       // ACT
-      const response = await request(app.getHttpServer())
-        .post(endpoint)
-        .send(input);
+      const response = await request(app.getHttpServer()).post(endpoint).send(input);
 
       // ASSERT
       expect(response.status).toBe(HttpStatus.UNAUTHORIZED);

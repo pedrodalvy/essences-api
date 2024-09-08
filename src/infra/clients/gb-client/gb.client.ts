@@ -1,12 +1,6 @@
 import { ListEssencesOutputInterface } from './dto/list-essences.output.interface';
 import { GBClientInterface } from './gb.client.interface';
-import {
-  HttpStatus,
-  Injectable,
-  InternalServerErrorException,
-  Logger,
-  NotFoundException,
-} from '@nestjs/common';
+import { HttpStatus, Injectable, InternalServerErrorException, Logger, NotFoundException } from '@nestjs/common';
 import { HttpService } from '@nestjs/axios';
 import { ConfigService } from '@nestjs/config';
 import { GBClientConstants } from './gb.client.constants';
@@ -64,10 +58,7 @@ export class GBClient implements GBClientInterface {
         }
       }
 
-      this.logger.error({
-        message: 'describeEssence - Unexpected error to describe essence',
-        error,
-      });
+      this.logger.error({ message: 'describeEssence - Unexpected error to describe essence', error });
       throw new InternalServerErrorException();
     }
   }

@@ -11,10 +11,7 @@ describe('CacheClient', () => {
 
   beforeEach(async () => {
     const app = await Test.createTestingModule({
-      providers: [
-        CacheClient,
-        { provide: CACHE_MANAGER, useValue: cacheManager },
-      ],
+      providers: [CacheClient, { provide: CACHE_MANAGER, useValue: cacheManager }],
     }).compile();
 
     cacheClient = app.get<CacheClientInterface>(CacheClient);
@@ -33,11 +30,7 @@ describe('CacheClient', () => {
       await cacheClient.set(input);
 
       // ASSERT
-      expect(cacheManager.set).toHaveBeenCalledWith(
-        input.key,
-        input.value,
-        input.ttl,
-      );
+      expect(cacheManager.set).toHaveBeenCalledWith(input.key, input.value, input.ttl);
     });
   });
 

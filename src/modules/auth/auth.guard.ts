@@ -1,10 +1,4 @@
-import {
-  CanActivate,
-  ExecutionContext,
-  Inject,
-  Injectable,
-  UnauthorizedException,
-} from '@nestjs/common';
+import { CanActivate, ExecutionContext, Inject, Injectable, UnauthorizedException } from '@nestjs/common';
 import { JwtClient } from '../../infra/clients/jwt-client/jwt.client';
 import { JwtClientInterface } from '../../infra/clients/jwt-client/jwt.client.interface';
 import { Request } from 'express';

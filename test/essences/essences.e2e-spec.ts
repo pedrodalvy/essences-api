@@ -47,9 +47,7 @@ describe('Essences (E2E)', () => {
     it('should list essences with success', async () => {
       // ARRANGE
       const expectedOutput = listEssencesOutputMock();
-      httpService.get.mockImplementationOnce(() =>
-        axiosResponseMock({ responseData: expectedOutput }),
-      );
+      httpService.get.mockImplementationOnce(() => axiosResponseMock({ responseData: expectedOutput }));
 
       const { token } = await jwtClient.createToken({ sub: 'any' });
 
@@ -66,21 +64,13 @@ describe('Essences (E2E)', () => {
     it('should cache the response of list essences', async () => {
       // ARRANGE
       const expectedOutput = listEssencesOutputMock();
-      httpService.get.mockImplementationOnce(() =>
-        axiosResponseMock({ responseData: expectedOutput }),
-      );
+      httpService.get.mockImplementationOnce(() => axiosResponseMock({ responseData: expectedOutput }));
       const { token } = await jwtClient.createToken({ sub: 'any' });
 
       // ACT
-      await request(app.getHttpServer())
-        .get('/api/v1/essences')
-        .set('Authorization', `Bearer ${token}`);
-      await request(app.getHttpServer())
-        .get('/api/v1/essences')
-        .set('Authorization', `Bearer ${token}`);
-      await request(app.getHttpServer())
-        .get('/api/v1/essences')
-        .set('Authorization', `Bearer ${token}`);
+      await request(app.getHttpServer()).get('/api/v1/essences').set('Authorization', `Bearer ${token}`);
+      await request(app.getHttpServer()).get('/api/v1/essences').set('Authorization', `Bearer ${token}`);
+      await request(app.getHttpServer()).get('/api/v1/essences').set('Authorization', `Bearer ${token}`);
 
       // ASSERT
       expect(httpService.get).toHaveBeenCalledTimes(1);
@@ -88,9 +78,7 @@ describe('Essences (E2E)', () => {
 
     it('should return unauthorized when token is invalid', async () => {
       // ACT
-      const response = await request(app.getHttpServer()).get(
-        '/api/v1/essences',
-      );
+      const response = await request(app.getHttpServer()).get('/api/v1/essences');
 
       // ASSERT
       expect(response.status).toBe(HttpStatus.UNAUTHORIZED);
@@ -102,16 +90,12 @@ describe('Essences (E2E)', () => {
 
     it('should return too many requests error when call more than 5 times', async () => {
       // ARRANGE
-      httpService.get.mockImplementationOnce(() =>
-        axiosResponseMock({ responseData: describeEssenceOutputMock() }),
-      );
+      httpService.get.mockImplementationOnce(() => axiosResponseMock({ responseData: describeEssenceOutputMock() }));
 
       const { token } = await jwtClient.createToken({ sub: 'any' });
 
       for (let i = 0; i < 5; i++) {
-        await request(app.getHttpServer())
-          .get('/api/v1/essences')
-          .set('Authorization', `Bearer ${token}`);
+        await request(app.getHttpServer()).get('/api/v1/essences').set('Authorization', `Bearer ${token}`);
       }
 
       // ACT
@@ -132,9 +116,7 @@ describe('Essences (E2E)', () => {
     it('should describe essence with success', async () => {
       // ARRANGE
       const expectedOutput = describeEssenceOutputMock();
-      httpService.get.mockImplementationOnce(() =>
-        axiosResponseMock({ responseData: expectedOutput }),
-      );
+      httpService.get.mockImplementationOnce(() => axiosResponseMock({ responseData: expectedOutput }));
       const { token } = await jwtClient.createToken({ sub: 'any' });
 
       // ACT
@@ -150,21 +132,13 @@ describe('Essences (E2E)', () => {
     it('should cache the response of describe essence', async () => {
       // ARRANGE
       const expectedOutput = describeEssenceOutputMock();
-      httpService.get.mockImplementationOnce(() =>
-        axiosResponseMock({ responseData: expectedOutput }),
-      );
+      httpService.get.mockImplementationOnce(() => axiosResponseMock({ responseData: expectedOutput }));
       const { token } = await jwtClient.createToken({ sub: 'any' });
 
       // ACT
-      await request(app.getHttpServer())
-        .get('/api/v1/essences/SI')
-        .set('Authorization', `Bearer ${token}`);
-      await request(app.getHttpServer())
-        .get('/api/v1/essences/SI')
-        .set('Authorization', `Bearer ${token}`);
-      await request(app.getHttpServer())
-        .get('/api/v1/essences/SI')
-        .set('Authorization', `Bearer ${token}`);
+      await request(app.getHttpServer()).get('/api/v1/essences/SI').set('Authorization', `Bearer ${token}`);
+      await request(app.getHttpServer()).get('/api/v1/essences/SI').set('Authorization', `Bearer ${token}`);
+      await request(app.getHttpServer()).get('/api/v1/essences/SI').set('Authorization', `Bearer ${token}`);
 
       // ASSERT
       expect(httpService.get).toHaveBeenCalledTimes(1);
@@ -172,9 +146,7 @@ describe('Essences (E2E)', () => {
 
     it('should return unauthorized when token is invalid', async () => {
       // ACT
-      const response = await request(app.getHttpServer()).get(
-        '/api/v1/essences/SI',
-      );
+      const response = await request(app.getHttpServer()).get('/api/v1/essences/SI');
 
       // ASSERT
       expect(response.status).toBe(HttpStatus.UNAUTHORIZED);
@@ -186,16 +158,12 @@ describe('Essences (E2E)', () => {
 
     it('should return too many requests error when call more than 5 times', async () => {
       // ARRANGE
-      httpService.get.mockImplementationOnce(() =>
-        axiosResponseMock({ responseData: describeEssenceOutputMock() }),
-      );
+      httpService.get.mockImplementationOnce(() => axiosResponseMock({ responseData: describeEssenceOutputMock() }));
 
       const { token } = await jwtClient.createToken({ sub: 'any' });
 
       for (let i = 0; i < 5; i++) {
-        await request(app.getHttpServer())
-          .get('/api/v1/essences/SI')
-          .set('Authorization', `Bearer ${token}`);
+        await request(app.getHttpServer()).get('/api/v1/essences/SI').set('Authorization', `Bearer ${token}`);
       }
 
       // ACT

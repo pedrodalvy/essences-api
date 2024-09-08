@@ -1,10 +1,4 @@
-import {
-  BadRequestException,
-  Inject,
-  Injectable,
-  Logger,
-  UnauthorizedException,
-} from '@nestjs/common';
+import { BadRequestException, Inject, Injectable, Logger, UnauthorizedException } from '@nestjs/common';
 import { SignUpInput } from './dto/sign-up.input';
 import { SignInOutput } from './dto/sign-in.output';
 import { SignInInput } from './dto/sign-in.input';

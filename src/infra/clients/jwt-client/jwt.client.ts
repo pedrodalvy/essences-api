@@ -43,10 +43,7 @@ export class JwtClient implements JwtClientInterface {
         secret: this.jwtSecret,
       });
     } catch (error: any) {
-      this.logger.error({
-        message: 'verifyToken - Failed to verify token',
-        error,
-      });
+      this.logger.error({ message: 'verifyToken - Failed to verify token', error });
       return false;
     }
 

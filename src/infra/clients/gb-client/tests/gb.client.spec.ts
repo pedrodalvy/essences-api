@@ -9,11 +9,7 @@ import { axiosResponseMock } from './mocks/axios.response.mock';
 import { GBClientConstants } from '../gb.client.constants';
 import { describeEssenceOutputMock } from '../../../../modules/essences/tests/mocks/describe-essence.output.mock';
 import { AxiosError, AxiosResponse, InternalAxiosRequestConfig } from 'axios';
-import {
-  HttpStatus,
-  InternalServerErrorException,
-  NotFoundException,
-} from '@nestjs/common';
+import { HttpStatus, InternalServerErrorException, NotFoundException } from '@nestjs/common';
 
 describe('GBClient', () => {
   let gbClient: GBClientInterface;
@@ -44,9 +40,7 @@ describe('GBClient', () => {
     it('should list essences with success', async () => {
       // ARRANGE
       const expectedOutput = listEssencesOutputMock();
-      httpService.get.mockImplementationOnce(() =>
-        axiosResponseMock({ responseData: expectedOutput }),
-      );
+      httpService.get.mockImplementationOnce(() => axiosResponseMock({ responseData: expectedOutput }));
 
       // ACT
       const result = await gbClient.listEssences();
@@ -57,9 +51,7 @@ describe('GBClient', () => {
 
     it('should call api wit correct config params', async () => {
       // ARRANGE
-      httpService.get.mockImplementationOnce(() =>
-        axiosResponseMock({ responseData: {} }),
-      );
+      httpService.get.mockImplementationOnce(() => axiosResponseMock({ responseData: {} }));
 
       const expectedURL = `${mockedURL}/v1/essences-challenge/essences`;
 
@@ -77,9 +69,7 @@ describe('GBClient', () => {
     it('should describe essence with success', async () => {
       // ARRANGE
       const expectedOutput = describeEssenceOutputMock();
-      httpService.get.mockImplementationOnce(() =>
-        axiosResponseMock({ responseData: expectedOutput }),
-      );
+      httpService.get.mockImplementationOnce(() => axiosResponseMock({ responseData: expectedOutput }));
 
       // ACT
       const result = await gbClient.describeEssence('any-id');
@@ -90,9 +80,7 @@ describe('GBClient', () => {
 
     it('should call api wit correct config params', async () => {
       // ARRANGE
-      httpService.get.mockImplementationOnce(() =>
-        axiosResponseMock({ responseData: {} }),
-      );
+      httpService.get.mockImplementationOnce(() => axiosResponseMock({ responseData: {} }));
 
       const id = 'essence-id';
       const expectedURL = `${mockedURL}/v1/essences-challenge/essences/${id}`;
@@ -108,13 +96,9 @@ describe('GBClient', () => {
 
     it('should throw NotFoundException when api returns 404', async () => {
       // ARRANGE
-      const errorMock = new AxiosError(
-        '',
-        '',
-        {} as InternalAxiosRequestConfig,
-        {},
-        { status: HttpStatus.NOT_FOUND } as AxiosResponse,
-      );
+      const errorMock = new AxiosError('', '', {} as InternalAxiosRequestConfig, {}, {
+        status: HttpStatus.NOT_FOUND,
+      } as AxiosResponse);
 
       httpService.get.mockImplementationOnce(() => {
         throw errorMock;
@@ -129,13 +113,9 @@ describe('GBClient', () => {
 
     it('should throw InternalServerErrorException when api returns any other error', async () => {
       // ARRANGE
-      const errorMock = new AxiosError(
-        '',
-        '',
-        {} as InternalAxiosRequestConfig,
-        {},
-        { status: HttpStatus.UNAUTHORIZED } as AxiosResponse,
-      );
+      const errorMock = new AxiosError('', '', {} as InternalAxiosRequestConfig, {}, {
+        status: HttpStatus.UNAUTHORIZED,
+      } as AxiosResponse);
 
       httpService.get.mockImplementationOnce(() => {
         throw errorMock;

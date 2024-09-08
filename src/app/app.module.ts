@@ -18,19 +18,10 @@ import { LoggerModule } from 'nestjs-pino';
       pinoHttp: {
         level: process.env.NODE_ENV === 'test' ? 'silent' : 'info',
         serializers: {
-          req: (req) => ({
-            requestId: req.id,
-            method: req.method,
-            url: req.url,
-          }),
-          res: (res) => ({
-            statusCode: res.statusCode,
-          }),
+          req: (req) => ({ requestId: req.id, method: req.method, url: req.url }),
+          res: (res) => ({ statusCode: res.statusCode }),
         },
-        transport: {
-          target: 'pino-pretty',
-          options: { singleLine: true },
-        },
+        transport: { target: 'pino-pretty', options: { singleLine: true } },
       },
     }),
     ConfigModule.forRoot(),
@@ -49,9 +40,7 @@ import { LoggerModule } from 'nestjs-pino';
       imports: [ConfigModule],
       inject: [ConfigService],
       useFactory: async (configService: ConfigService) => ({
-        storage: new ThrottlerStorageRedisService(
-          configService.get(AppConstants.THROTTLER_STORE_URL),
-        ),
+        storage: new ThrottlerStorageRedisService(configService.get(AppConstants.THROTTLER_STORE_URL)),
         errorMessage: AppConstants.THROTTLER_ERROR_MESSAGE,
         throttlers: [
           {
