@@ -4,10 +4,12 @@ import { ClientsModule } from './infra/clients/clients.module';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { CacheInterceptor, CacheModule } from '@nestjs/cache-manager';
 import { RedisClientOptions } from 'redis';
-import { APP_INTERCEPTOR } from '@nestjs/core';
+import { APP_GUARD, APP_INTERCEPTOR } from '@nestjs/core';
 import { AppConstants } from './app.constants';
 import { AuthModule } from './modules/auth/auth.module';
 import * as redisStore from 'cache-manager-redis-store';
+import { ThrottlerGuard, ThrottlerModule } from '@nestjs/throttler';
+import { ThrottlerStorageRedisService } from '@nest-lab/throttler-storage-redis';
 
 @Module({
   imports: [
@@ -23,10 +25,29 @@ import * as redisStore from 'cache-manager-redis-store';
         port: Number(configService.get(AppConstants.REDIS_PORT)),
       }),
     }),
+    ThrottlerModule.forRootAsync({
+      imports: [ConfigModule],
+      inject: [ConfigService],
+      useFactory: async (configService: ConfigService) => ({
+        storage: new ThrottlerStorageRedisService(
+          configService.get(AppConstants.THROTTLER_STORE_URL),
+        ),
+        errorMessage: AppConstants.THROTTLER_ERROR_MESSAGE,
+        throttlers: [
+          {
+            ttl: Number(configService.get(AppConstants.THROTTLER_TTL)),
+            limit: Number(configService.get(AppConstants.THROTTLER_LIMIT)),
+          },
+        ],
+      }),
+    }),
     ClientsModule,
     EssencesModule,
     AuthModule,
   ],
-  providers: [{ provide: APP_INTERCEPTOR, useClass: CacheInterceptor }],
+  providers: [
+    { provide: APP_INTERCEPTOR, useClass: CacheInterceptor },
+    { provide: APP_GUARD, useClass: ThrottlerGuard },
+  ],
 })
 export class AppModule {}

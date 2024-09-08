@@ -98,6 +98,33 @@ describe('Essences (E2E)', () => {
         message: 'Invalid token',
       });
     });
+
+    it('should return too many requests error when call more than 5 times', async () => {
+      // ARRANGE
+      httpService.get.mockImplementationOnce(() =>
+        axiosResponseMock({ responseData: describeEssenceOutputMock() }),
+      );
+
+      const { token } = await jwtClient.createToken({ sub: 'any' });
+
+      for (let i = 0; i < 5; i++) {
+        await request(app.getHttpServer())
+          .get('/api/v1/essences')
+          .set('Authorization', `Bearer ${token}`);
+      }
+
+      // ACT
+      const response = await request(app.getHttpServer())
+        .get('/api/v1/essences')
+        .set('Authorization', `Bearer ${token}`);
+
+      // ASSERT
+      expect(response.status).toBe(HttpStatus.TOO_MANY_REQUESTS);
+      expect(response.body).toEqual({
+        statusCode: HttpStatus.TOO_MANY_REQUESTS,
+        message: 'Too many requests',
+      });
+    });
   });
 
   describe('describeEssence (GET)', () => {
@@ -154,6 +181,33 @@ describe('Essences (E2E)', () => {
         statusCode: HttpStatus.UNAUTHORIZED,
         error: 'Unauthorized',
         message: 'Invalid token',
+      });
+    });
+
+    it('should return too many requests error when call more than 5 times', async () => {
+      // ARRANGE
+      httpService.get.mockImplementationOnce(() =>
+        axiosResponseMock({ responseData: describeEssenceOutputMock() }),
+      );
+
+      const { token } = await jwtClient.createToken({ sub: 'any' });
+
+      for (let i = 0; i < 5; i++) {
+        await request(app.getHttpServer())
+          .get('/api/v1/essences/SI')
+          .set('Authorization', `Bearer ${token}`);
+      }
+
+      // ACT
+      const response = await request(app.getHttpServer())
+        .get('/api/v1/essences/SI')
+        .set('Authorization', `Bearer ${token}`);
+
+      // ASSERT
+      expect(response.status).toBe(HttpStatus.TOO_MANY_REQUESTS);
+      expect(response.body).toEqual({
+        statusCode: HttpStatus.TOO_MANY_REQUESTS,
+        message: 'Too many requests',
       });
     });
   });
