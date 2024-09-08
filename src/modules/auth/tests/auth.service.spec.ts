@@ -7,11 +7,14 @@ import { CacheClient } from '../../../infra/clients/cache-client/cache.client';
 import { AuthConstants } from '../auth.constants';
 import { EncryptionClientInterface } from '../../../infra/clients/encryption-client/encryption.client.interface';
 import { EncryptionClient } from '../../../infra/clients/encryption-client/encryption.client';
+import { JwtClientInterface } from '../../../infra/clients/jwt-client/jwt.client.interface';
+import { JwtClient } from '../../../infra/clients/jwt-client/jwt.client';
 
 describe('AuthService', () => {
   let authService: AuthService;
   const cacheClient = mock<CacheClientInterface>();
   const encryptionClient = mock<EncryptionClientInterface>();
+  const jwtClient = mock<JwtClientInterface>();
 
   beforeEach(async () => {
     const app = await Test.createTestingModule({
@@ -19,6 +22,7 @@ describe('AuthService', () => {
         AuthService,
         { provide: CacheClient, useValue: cacheClient },
         { provide: EncryptionClient, useValue: encryptionClient },
+        { provide: JwtClient, useValue: jwtClient },
       ],
     }).compile();
 
@@ -68,6 +72,7 @@ describe('AuthService', () => {
       encryptionClient.compare.mockResolvedValueOnce(true);
 
       const expectedOutput = { token: 'token', ttl: 3600 };
+      jwtClient.createToken.mockResolvedValueOnce(expectedOutput);
 
       // ACT
       const result = await authService.signIn(input);

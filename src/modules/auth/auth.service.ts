@@ -12,6 +12,8 @@ import { CacheClient } from '../../infra/clients/cache-client/cache.client';
 import { AuthConstants } from './auth.constants';
 import { EncryptionClient } from '../../infra/clients/encryption-client/encryption.client';
 import { EncryptionClientInterface } from '../../infra/clients/encryption-client/encryption.client.interface';
+import { JwtClient } from '../../infra/clients/jwt-client/jwt.client';
+import { JwtClientInterface } from '../../infra/clients/jwt-client/jwt.client.interface';
 
 @Injectable()
 export class AuthService {
@@ -21,6 +23,9 @@ export class AuthService {
 
     @Inject(EncryptionClient)
     private readonly encryptionClient: EncryptionClientInterface,
+
+    @Inject(JwtClient)
+    private readonly jwtClient: JwtClientInterface,
   ) {}
 
   async signUp({ user, password }: SignUpInput): Promise<void> {
@@ -52,9 +57,6 @@ export class AuthService {
       throw new UnauthorizedException('Invalid credentials');
     }
 
-    return {
-      token: 'token',
-      ttl: 3600,
-    };
+    return this.jwtClient.createToken({ sub: user });
   }
 }
