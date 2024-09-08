@@ -7,4 +7,5 @@ export enum AppConstants {
   THROTTLER_LIMIT = 'THROTTLER_LIMIT',
   THROTTLER_STORE_URL = 'THROTTLER_STORE_URL',
   THROTTLER_ERROR_MESSAGE = 'Too many requests',
+  LOG_LEVEL = 'LOG_LEVEL',
 }

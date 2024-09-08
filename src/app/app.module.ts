@@ -14,15 +14,19 @@ import { LoggerModule } from 'nestjs-pino';
 
 @Module({
   imports: [
-    LoggerModule.forRoot({
-      pinoHttp: {
-        level: process.env.NODE_ENV === 'test' ? 'silent' : 'info',
-        serializers: {
-          req: (req) => ({ requestId: req.id, method: req.method, url: req.url }),
-          res: (res) => ({ statusCode: res.statusCode }),
+    LoggerModule.forRootAsync({
+      imports: [ConfigModule],
+      inject: [ConfigService],
+      useFactory: (configService: ConfigService) => ({
+        pinoHttp: {
+          level: configService.get(AppConstants.LOG_LEVEL),
+          serializers: {
+            req: (req) => ({ requestId: req.id, method: req.method, url: req.url }),
+            res: (res) => ({ statusCode: res.statusCode }),
+          },
+          transport: { target: 'pino-pretty', options: { singleLine: true } },
         },
-        transport: { target: 'pino-pretty', options: { singleLine: true } },
-      },
+      }),
     }),
     ConfigModule.forRoot(),
     CacheModule.registerAsync<RedisClientOptions>({

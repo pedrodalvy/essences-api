@@ -13,11 +13,11 @@
     "start:debug": "nest start --debug --watch",
     "start:prod": "node dist/main",
     "lint": "eslint \"{src,apps,libs,test}/**/*.ts\" --fix",
-    "test": "NODE_ENV=test jest",
-    "test:watch": "NODE_ENV=test jest --watch",
-    "test:cov": "NODE_ENV=test jest --coverage",
+    "test": "LOG_LEVEL=silent jest",
+    "test:watch": "LOG_LEVEL=silent jest --watch",
+    "test:cov": "LOG_LEVEL=silent jest --coverage",
     "test:debug": "node --inspect-brk -r tsconfig-paths/register -r ts-node/register node_modules/.bin/jest --runInBand",
-    "test:e2e": "jest --config ./test/jest-e2e.json --runInBand --forceExit"
+    "test:e2e": "LOG_LEVEL=silent jest --config ./test/jest-e2e.json --runInBand --forceExit"
   },
   "dependencies": {
     "@nest-lab/throttler-storage-redis": "1.0.0",
