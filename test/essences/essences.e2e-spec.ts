@@ -31,6 +31,8 @@ describe('Essences (E2E)', () => {
     appConfig(app);
 
     cacheManager = app.get<Cache>(CACHE_MANAGER);
+    await cacheManager.reset();
+
     jwtClient = app.get<JwtClientInterface>(JwtClient);
     await app.init();
   });

@@ -2,6 +2,7 @@ import {
   BadRequestException,
   Inject,
   Injectable,
+  Logger,
   UnauthorizedException,
 } from '@nestjs/common';
 import { SignUpInput } from './dto/sign-up.input';
@@ -17,6 +18,8 @@ import { JwtClientInterface } from '../../infra/clients/jwt-client/jwt.client.in
 
 @Injectable()
 export class AuthService {
+  private readonly logger = new Logger(AuthService.name);
+
   constructor(
     @Inject(CacheClient)
     private readonly cacheClient: CacheClientInterface,
@@ -29,22 +32,29 @@ export class AuthService {
   ) {}
 
   async signUp({ user, password }: SignUpInput): Promise<void> {
+    this.logger.log({ message: 'signUp - Start' });
+
     const key = `${AuthConstants.CACHE_PREFIX}:${user}`;
     const credential = await this.cacheClient.get(key);
 
     if (credential) {
+      this.logger.error({ message: 'signUp - User already exists' });
       throw new BadRequestException('User already exists');
     }
 
     const encryptedPassword = await this.encryptionClient.encrypt(password);
     await this.cacheClient.set({ key, value: encryptedPassword });
+    this.logger.log({ message: 'signUp - End' });
   }
 
   async signIn({ user, password }: SignInInput): Promise<SignInOutput> {
+    this.logger.log({ message: 'signIn - Start' });
+
     const key = `${AuthConstants.CACHE_PREFIX}:${user}`;
     const credential = await this.cacheClient.get(key);
 
     if (!credential) {
+      this.logger.error({ message: 'signIn - Invalid credentials' });
       throw new UnauthorizedException('Invalid credentials');
     }
 
@@ -54,9 +64,13 @@ export class AuthService {
     });
 
     if (!isValidPassword) {
+      this.logger.error({ message: 'signIn - Invalid credentials' });
       throw new UnauthorizedException('Invalid credentials');
     }
 
-    return this.jwtClient.createToken({ sub: user });
+    const output = await this.jwtClient.createToken({ sub: user });
+
+    this.logger.log({ message: 'signIn - End' });
+    return output;
   }
 }

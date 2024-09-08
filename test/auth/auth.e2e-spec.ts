@@ -23,6 +23,8 @@ describe('Auth (E2E)', () => {
     appConfig(app);
 
     cacheManager = app.get<Cache>(CACHE_MANAGER);
+    await cacheManager.reset();
+
     encryptionClient = app.get<EncryptionClientInterface>(EncryptionClient);
     await app.init();
   });

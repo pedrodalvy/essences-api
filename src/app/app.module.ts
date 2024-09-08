@@ -10,9 +10,29 @@ import { AuthModule } from '../modules/auth/auth.module';
 import * as redisStore from 'cache-manager-redis-store';
 import { ThrottlerGuard, ThrottlerModule } from '@nestjs/throttler';
 import { ThrottlerStorageRedisService } from '@nest-lab/throttler-storage-redis';
+import { LoggerModule } from 'nestjs-pino';
 
 @Module({
   imports: [
+    LoggerModule.forRoot({
+      pinoHttp: {
+        level: process.env.NODE_ENV === 'test' ? 'silent' : 'info',
+        serializers: {
+          req: (req) => ({
+            requestId: req.id,
+            method: req.method,
+            url: req.url,
+          }),
+          res: (res) => ({
+            statusCode: res.statusCode,
+          }),
+        },
+        transport: {
+          target: 'pino-pretty',
+          options: { singleLine: true },
+        },
+      },
+    }),
     ConfigModule.forRoot(),
     CacheModule.registerAsync<RedisClientOptions>({
       imports: [ConfigModule],

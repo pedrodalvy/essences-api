@@ -4,6 +4,7 @@ import {
   HttpStatus,
   Injectable,
   InternalServerErrorException,
+  Logger,
   NotFoundException,
 } from '@nestjs/common';
 import { HttpService } from '@nestjs/axios';
@@ -15,6 +16,8 @@ import { AxiosError } from 'axios';
 
 @Injectable()
 export class GBClient implements GBClientInterface {
+  private readonly logger = new Logger(GBClient.name);
+
   private readonly authToken: string;
   private readonly baseUrl: string;
 
@@ -27,6 +30,8 @@ export class GBClient implements GBClientInterface {
   }
 
   async listEssences(): Promise<ListEssencesOutputInterface[]> {
+    this.logger.log({ message: 'listEssences - Start' });
+
     const apiURL = `${this.baseUrl}/v1/essences-challenge/essences`;
     const { data } = await firstValueFrom(
       this.httpService.get<ListEssencesOutputInterface[]>(apiURL, {
@@ -34,10 +39,13 @@ export class GBClient implements GBClientInterface {
       }),
     );
 
+    this.logger.log({ message: 'listEssences - End' });
     return data;
   }
 
   async describeEssence(id: string): Promise<DescribeEssenceOutputInterface> {
+    this.logger.log({ message: 'describeEssence - Start' });
+
     const apiURL = `${this.baseUrl}/v1/essences-challenge/essences/${id}`;
 
     try {
@@ -47,6 +55,7 @@ export class GBClient implements GBClientInterface {
         }),
       );
 
+      this.logger.log({ message: 'describeEssence - End' });
       return data;
     } catch (error: AxiosError | any) {
       if (error instanceof AxiosError) {
@@ -55,6 +64,10 @@ export class GBClient implements GBClientInterface {
         }
       }
 
+      this.logger.error({
+        message: 'describeEssence - Unexpected error to describe essence',
+        error,
+      });
       throw new InternalServerErrorException();
     }
   }
