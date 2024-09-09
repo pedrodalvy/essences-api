@@ -1,6 +1,6 @@
 {
   "name": "essences-api",
-  "version": "0.0.1",
+  "version": "1.0.0",
   "description": "",
   "author": "",
   "private": true,
@@ -28,6 +28,7 @@
     "@nestjs/core": "10.4.1",
     "@nestjs/jwt": "10.2.0",
     "@nestjs/platform-express": "10.4.1",
+    "@nestjs/swagger": "7.4.0",
     "@nestjs/throttler": "6.2.1",
     "axios": "1.7.7",
     "bcrypt": "5.0.1",
@@ -87,6 +88,7 @@
       "!**/*.module.ts",
       "!**/*.mock.ts",
       "!**/app/**",
+      "!**/swagger/**",
       "!**/main.ts"
     ],
     "coverageDirectory": "../coverage",
