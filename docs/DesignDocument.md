@@ -3,18 +3,21 @@
 ## Índice
 
 - [1. Resumo do Projeto](#1-resumo-do-projeto)
-  - [1.1. Objetivo](#11-objetivo)
-  - [1.2. Escopo](#12-escopo)
+    - [1.1. Objetivo](#11-objetivo)
+    - [1.2. Escopo](#12-escopo)
 - [2. Arquitetura](#2-arquitetura)
-  - [2.1. Diagrama C4](#21-diagrama-c4) 
+    - [2.1. Diagrama C4](#21-diagrama-c4)
+    - [2.2. Diagramas de Sequência](#22-diagramas-de-sequência)
+        - [2.2.1 Listagem de todas as essências](#221-listagem-de-todas-as-essências)
+        - [2.2.2 Consulta de uma essência por ID](#222-consulta-de-uma-essência-por-id)
 - [3. Requisitos Funcionais](#3-requisitos-funcionais)
-  - [3.1. Endpoints de listagem e consulta de Essências](#31-endpoints-de-listagem-e-consulta-de-essências)
-  - [3.2. Cadastro de Usuários e Autenticação](#32-cadastro-de-usuários-e-autenticação)
+    - [3.1. Endpoints de listagem e consulta de Essências](#31-endpoints-de-listagem-e-consulta-de-essências)
+    - [3.2. Cadastro de Usuários e Autenticação](#32-cadastro-de-usuários-e-autenticação)
 - [4. Requisitos de Não Funcionais](#4-requisitos-de-não-funcionais)
-  - [4.1. Desempenho](#41-desempenho)
-  - [4.2. Segurança](#42-segurança)
-    - [4.2.1. Autenticação](#421-autenticação)
-    - [4.2.2. Rate Limiting](#422-rate-limiting)
+    - [4.1. Desempenho](#41-desempenho)
+    - [4.2. Segurança](#42-segurança)
+        - [4.2.1. Autenticação](#421-autenticação)
+        - [4.2.2. Rate Limiting](#422-rate-limiting)
 
 ## 1. Resumo do Projeto
 
@@ -39,6 +42,16 @@ uma Essência por ID, Criação de usuários e Autenticação.
 ### 2.1. Diagrama C4
 
 ![C4 Diagram](./EssencesAPI.png)
+
+### 2.2. Diagramas de Sequência
+
+#### 2.2.1 Listagem de todas as essências
+
+![List Essences](./List%20Essences.png)
+
+#### 2.2.2 Consulta de uma essência por ID
+
+![Describe Essence](./Describe%20Essence.png)
 
 ## 3. Requisitos Funcionais
 
