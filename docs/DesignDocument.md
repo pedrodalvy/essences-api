@@ -18,6 +18,7 @@
     - [4.2. Segurança](#42-segurança)
         - [4.2.1. Autenticação](#421-autenticação)
         - [4.2.2. Rate Limiting](#422-rate-limiting)
+        - [4.2.3. Logs](#423-logs)
 
 ## 1. Resumo do Projeto
 
@@ -164,3 +165,24 @@ ambiente.
 
 O gerenciamento de Rate Limiting é realizado pela biblioteca `@nestjs/throttler`, presente na documentação oficial do
 NestJS: [Rate Limiting](https://docs.nestjs.com/security/rate-limiting#rate-limiting)
+
+#### 4.2.3. Logs
+
+Foram adicionados logs no código para marcar o início e fim de cada etapa processada, facilitando o troubleshooting em caso de falhas. Também é possível ajustar o nível de log, permitindo registrar apenas erros quando necessário.
+
+A biblioteca utilizada para gerenciamento dos logs é a `nestjs-pino`, é um logger rápido e eficiente para aplicações NestJS, baseado no [Pino](https://github.com/pinojs/pino). Ela facilita o gerenciamento de logs estruturados, com suporte a níveis de log configuráveis, como debug e error, além de permitir a integração com o contexto da aplicação, como IDs de requisições. 
+
+Os logs seguem o seguinte formato:
+```json
+{
+   "req":{
+      "requestId": "ebadee37-fd62-4fa7-abee-1d358fecf018",
+      "method":"GET",
+      "url":"/api/v1/essences"
+   },
+   "res":{
+      "statusCode":200
+   },
+   "responseTime":571
+}
+```

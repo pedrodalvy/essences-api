@@ -11,6 +11,7 @@ import * as redisStore from 'cache-manager-redis-store';
 import { ThrottlerGuard, ThrottlerModule } from '@nestjs/throttler';
 import { ThrottlerStorageRedisService } from '@nest-lab/throttler-storage-redis';
 import { LoggerModule } from 'nestjs-pino';
+import { randomUUID } from 'crypto';
 
 @Module({
   imports: [
@@ -24,6 +25,7 @@ import { LoggerModule } from 'nestjs-pino';
             req: (req) => ({ requestId: req.id, method: req.method, url: req.url }),
             res: (res) => ({ statusCode: res.statusCode }),
           },
+          genReqId: () => randomUUID(),
           transport: { target: 'pino-pretty', options: { singleLine: true } },
         },
       }),
