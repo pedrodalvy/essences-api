@@ -1,13 +1,13 @@
 import { CanActivate, ExecutionContext, Inject, Injectable, UnauthorizedException } from '@nestjs/common';
-import { JwtClient } from '../../infra/clients/jwt-client/jwt.client';
-import { JwtClientInterface } from '../../infra/clients/jwt-client/jwt.client.interface';
+import { JwtAdapter } from '../../infra/adapters/jwt-adapter/jwt.adapter';
+import { JwtAdapterInterface } from '../../infra/adapters/jwt-adapter/jwt.adapter.interface';
 import { Request } from 'express';
 
 @Injectable()
 export class AuthGuard implements CanActivate {
   constructor(
-    @Inject(JwtClient)
-    private readonly jwtClient: JwtClientInterface,
+    @Inject(JwtAdapter)
+    private readonly jwtAdapter: JwtAdapterInterface,
   ) {}
 
   async canActivate(context: ExecutionContext): Promise<boolean> {
@@ -18,7 +18,7 @@ export class AuthGuard implements CanActivate {
       throw new UnauthorizedException('Invalid token');
     }
 
-    const isValidToken = await this.jwtClient.verifyToken(token);
+    const isValidToken = await this.jwtAdapter.verifyToken(token);
     if (!isValidToken) {
       throw new UnauthorizedException('Invalid token');
     }

@@ -6,13 +6,13 @@ import * as request from 'supertest';
 import { Cache } from 'cache-manager';
 import { CACHE_MANAGER } from '@nestjs/cache-manager';
 import { AuthConstants } from '../../src/modules/auth/auth.constants';
-import { EncryptionClientInterface } from '../../src/infra/clients/encryption-client/encryption.client.interface';
-import { EncryptionClient } from '../../src/infra/clients/encryption-client/encryption.client';
+import { EncryptionAdapterInterface } from '../../src/infra/adapters/encryption-adapter/encryption.adapter.interface';
+import { EncryptionAdapter } from '../../src/infra/adapters/encryption-adapter/encryption.adapter';
 
 describe('Auth (E2E)', () => {
   let app: INestApplication;
   let cacheManager: Cache;
-  let encryptionClient: EncryptionClientInterface;
+  let encryptionAdapter: EncryptionAdapterInterface;
 
   beforeEach(async () => {
     const moduleFixture: TestingModule = await Test.createTestingModule({
@@ -25,7 +25,7 @@ describe('Auth (E2E)', () => {
     cacheManager = app.get<Cache>(CACHE_MANAGER);
     await cacheManager.reset();
 
-    encryptionClient = app.get<EncryptionClientInterface>(EncryptionClient);
+    encryptionAdapter = app.get<EncryptionAdapterInterface>(EncryptionAdapter);
     await app.init();
   });
 
@@ -71,7 +71,7 @@ describe('Auth (E2E)', () => {
       const endpoint = '/api/v1/auth/sign-in';
       const input = { user: 'user', password: 'password' };
 
-      const encryptedPassword = await encryptionClient.encrypt(input.password);
+      const encryptedPassword = await encryptionAdapter.encrypt(input.password);
       cacheManager.set(`${AuthConstants.CACHE_PREFIX}:${input.user}`, encryptedPassword);
 
       // ACT

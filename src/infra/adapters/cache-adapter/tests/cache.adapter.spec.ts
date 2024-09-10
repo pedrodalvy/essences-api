@@ -1,20 +1,20 @@
 import { Test } from '@nestjs/testing';
-import { CacheClientInterface } from '../cache.client.interface';
+import { CacheAdapterInterface } from '../cache.adapter.interface';
 import { Cache } from 'cache-manager';
 import { mock } from 'jest-mock-extended';
-import { CacheClient } from '../cache.client';
+import { CacheAdapter } from '../cache.adapter';
 import { CACHE_MANAGER } from '@nestjs/cache-manager';
 
-describe('CacheClient', () => {
-  let cacheClient: CacheClientInterface;
+describe('CacheAdapter', () => {
+  let cacheAdapter: CacheAdapterInterface;
   const cacheManager = mock<Cache>();
 
   beforeEach(async () => {
     const app = await Test.createTestingModule({
-      providers: [CacheClient, { provide: CACHE_MANAGER, useValue: cacheManager }],
+      providers: [CacheAdapter, { provide: CACHE_MANAGER, useValue: cacheManager }],
     }).compile();
 
-    cacheClient = app.get<CacheClientInterface>(CacheClient);
+    cacheAdapter = app.get<CacheAdapterInterface>(CacheAdapter);
   });
 
   describe('set', () => {
@@ -27,7 +27,7 @@ describe('CacheClient', () => {
       };
 
       // ACT
-      await cacheClient.set(input);
+      await cacheAdapter.set(input);
 
       // ASSERT
       expect(cacheManager.set).toHaveBeenCalledWith(input.key, input.value, input.ttl);
@@ -43,7 +43,7 @@ describe('CacheClient', () => {
       cacheManager.get.mockResolvedValue(expectedValue);
 
       // ACT
-      const result = await cacheClient.get(key);
+      const result = await cacheAdapter.get(key);
 
       // ASSERT
       expect(result).toEqual(expectedValue);

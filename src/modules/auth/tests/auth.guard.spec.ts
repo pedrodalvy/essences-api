@@ -1,18 +1,18 @@
 import { mock } from 'jest-mock-extended';
-import { JwtClientInterface } from '../../../infra/clients/jwt-client/jwt.client.interface';
+import { JwtAdapterInterface } from '../../../infra/adapters/jwt-adapter/jwt.adapter.interface';
 import { Test } from '@nestjs/testing';
-import { JwtClient } from '../../../infra/clients/jwt-client/jwt.client';
+import { JwtAdapter } from '../../../infra/adapters/jwt-adapter/jwt.adapter';
 import { AuthGuard } from '../auth.guard';
 import { executionContextMock } from './mocks/execution-context.mock';
 import { UnauthorizedException } from '@nestjs/common';
 
 describe('AuthGuard', () => {
   let authGuard: AuthGuard;
-  const jwtClient = mock<JwtClientInterface>();
+  const jwtAdapter = mock<JwtAdapterInterface>();
 
   beforeEach(async () => {
     const app = await Test.createTestingModule({
-      providers: [AuthGuard, { provide: JwtClient, useValue: jwtClient }],
+      providers: [AuthGuard, { provide: JwtAdapter, useValue: jwtAdapter }],
     }).compile();
 
     authGuard = app.get(AuthGuard);
@@ -22,7 +22,7 @@ describe('AuthGuard', () => {
     it('should return true when token is valid', async () => {
       // ARRANGE
       const context = executionContextMock('valid-token');
-      jwtClient.verifyToken.mockResolvedValueOnce(true);
+      jwtAdapter.verifyToken.mockResolvedValueOnce(true);
 
       // ACT
       const result = await authGuard.canActivate(context);
@@ -34,7 +34,7 @@ describe('AuthGuard', () => {
     it('should throw UnauthorizedException when token is invalid', async () => {
       // ARRANGE
       const context = executionContextMock('invalid-token');
-      jwtClient.verifyToken.mockResolvedValueOnce(false);
+      jwtAdapter.verifyToken.mockResolvedValueOnce(false);
 
       const expectedError = new UnauthorizedException('Invalid token');
 
@@ -49,7 +49,7 @@ describe('AuthGuard', () => {
       // ARRANGE
       const context = executionContextMock('');
       const expectedError = new UnauthorizedException('Invalid token');
-      jwtClient.verifyToken.mockResolvedValueOnce(true);
+      jwtAdapter.verifyToken.mockResolvedValueOnce(true);
 
       // ACT
       const promise = authGuard.canActivate(context);

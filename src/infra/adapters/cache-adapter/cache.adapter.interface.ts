@@ -1,6 +1,6 @@
 import { SetCacheKeyInput } from './dto/set-cache-key.input';
 
-export interface CacheClientInterface {
+export interface CacheAdapterInterface {
   get(key: string): Promise<string | undefined>;
   set(input: SetCacheKeyInput): Promise<void>;
 }

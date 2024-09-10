@@ -1,16 +1,16 @@
 import { Test } from '@nestjs/testing';
-import { EncryptionClientInterface } from '../encryption.client.interface';
-import { EncryptionClient } from '../encryption.client';
+import { EncryptionAdapterInterface } from '../encryption.adapter.interface';
+import { EncryptionAdapter } from '../encryption.adapter';
 
-describe('EncryptionClient', () => {
-  let encryptionClient: EncryptionClientInterface;
+describe('EncryptionAdapter', () => {
+  let encryptionAdapter: EncryptionAdapterInterface;
 
   beforeEach(async () => {
     const app = await Test.createTestingModule({
-      providers: [EncryptionClient],
+      providers: [EncryptionAdapter],
     }).compile();
 
-    encryptionClient = app.get<EncryptionClientInterface>(EncryptionClient);
+    encryptionAdapter = app.get<EncryptionAdapterInterface>(EncryptionAdapter);
   });
 
   describe('encrypt', () => {
@@ -19,7 +19,7 @@ describe('EncryptionClient', () => {
       const value = 'any-value';
 
       // ACT
-      const result = await encryptionClient.encrypt(value);
+      const result = await encryptionAdapter.encrypt(value);
 
       // ASSERT
       expect(typeof result).toBe('string');
@@ -31,10 +31,10 @@ describe('EncryptionClient', () => {
     it('should return true when compare a valid value', async () => {
       // ARRANGE
       const originalValue = 'any-value';
-      const encryptedValue = await encryptionClient.encrypt(originalValue);
+      const encryptedValue = await encryptionAdapter.encrypt(originalValue);
 
       // ACT
-      const result = await encryptionClient.compare({
+      const result = await encryptionAdapter.compare({
         value: originalValue,
         hash: encryptedValue,
       });
@@ -45,10 +45,10 @@ describe('EncryptionClient', () => {
 
     it('should return false when compare an invalid value', async () => {
       // ARRANGE
-      const encryptedValue = await encryptionClient.encrypt('any-value');
+      const encryptedValue = await encryptionAdapter.encrypt('any-value');
 
       // ACT
-      const result = await encryptionClient.compare({
+      const result = await encryptionAdapter.compare({
         value: 'invalid-value',
         hash: encryptedValue,
       });

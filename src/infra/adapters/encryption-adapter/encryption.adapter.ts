@@ -1,11 +1,11 @@
-import { EncryptionClientInterface } from './encryption.client.interface';
+import { EncryptionAdapterInterface } from './encryption.adapter.interface';
 import { EncryptionCompareInput } from './dto/encryption-compare.input';
 import * as bcrypt from 'bcrypt';
 import { Injectable, Logger } from '@nestjs/common';
 
 @Injectable()
-export class EncryptionClient implements EncryptionClientInterface {
-  private readonly logger = new Logger(EncryptionClient.name);
+export class EncryptionAdapter implements EncryptionAdapterInterface {
+  private readonly logger = new Logger(EncryptionAdapter.name);
 
   async encrypt(value: string): Promise<string> {
     this.logger.log({ message: 'encrypt - Start' });

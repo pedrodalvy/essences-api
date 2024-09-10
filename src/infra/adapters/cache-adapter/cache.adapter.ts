@@ -1,12 +1,12 @@
-import { CacheClientInterface } from './cache.client.interface';
+import { CacheAdapterInterface } from './cache.adapter.interface';
 import { SetCacheKeyInput } from './dto/set-cache-key.input';
 import { Inject, Injectable, Logger } from '@nestjs/common';
 import { CACHE_MANAGER } from '@nestjs/cache-manager';
 import { Cache } from 'cache-manager';
 
 @Injectable()
-export class CacheClient implements CacheClientInterface {
-  private readonly logger = new Logger(CacheClient.name);
+export class CacheAdapter implements CacheAdapterInterface {
+  private readonly logger = new Logger(CacheAdapter.name);
 
   constructor(@Inject(CACHE_MANAGER) private cacheManager: Cache) {}
 

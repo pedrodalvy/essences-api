@@ -1,18 +1,18 @@
 import { Test } from '@nestjs/testing';
 import { EssencesService } from '../essences.service';
 import { mock } from 'jest-mock-extended';
-import { GBClientInterface } from '../../../infra/clients/gb-client/gb.client.interface';
-import { GBClient } from '../../../infra/clients/gb-client/gb.client';
+import { GbClientAdapterInterface } from '../../../infra/adapters/gb-client-adapter/gb-client.adapter.interface';
+import { GbClientAdapter } from '../../../infra/adapters/gb-client-adapter/gb-client.adapter';
 import { listEssencesOutputMock } from './mocks/list-essences.output.mock';
 import { describeEssenceOutputMock } from './mocks/describe-essence.output.mock';
 
 describe('EssencesService', () => {
   let essencesService: EssencesService;
-  const gbClient = mock<GBClientInterface>();
+  const gbClientAdapter = mock<GbClientAdapterInterface>();
 
   beforeEach(async () => {
     const app = await Test.createTestingModule({
-      providers: [EssencesService, { provide: GBClient, useValue: gbClient }],
+      providers: [EssencesService, { provide: GbClientAdapter, useValue: gbClientAdapter }],
     }).compile();
 
     essencesService = app.get(EssencesService);
@@ -22,7 +22,7 @@ describe('EssencesService', () => {
     it('should list essences with success', async () => {
       // ARRANGE
       const expectedOutput = listEssencesOutputMock();
-      gbClient.listEssences.mockResolvedValueOnce(expectedOutput);
+      gbClientAdapter.listEssences.mockResolvedValueOnce(expectedOutput);
 
       // ACT
       const result = await essencesService.listEssences();
@@ -37,14 +37,14 @@ describe('EssencesService', () => {
       // ARRANGE
       const id = 'essence-id';
       const expectedOutput = describeEssenceOutputMock();
-      gbClient.describeEssence.mockResolvedValueOnce(expectedOutput);
+      gbClientAdapter.describeEssence.mockResolvedValueOnce(expectedOutput);
 
       // ACT
       const result = await essencesService.describeEssence(id);
 
       // ASSERT
       expect(result).toEqual(expectedOutput);
-      expect(gbClient.describeEssence).toHaveBeenCalledWith(id);
+      expect(gbClientAdapter.describeEssence).toHaveBeenCalledWith(id);
     });
   });
 });

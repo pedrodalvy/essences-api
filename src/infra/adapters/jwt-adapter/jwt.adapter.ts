@@ -1,14 +1,14 @@
-import { JwtClientInterface } from './jwt.client.interface';
+import { JwtAdapterInterface } from './jwt.adapter.interface';
 import { CreateTokenInput } from './dto/create-token.input';
 import { JwtService } from '@nestjs/jwt';
 import { Injectable, Logger } from '@nestjs/common';
 import { CreateTokenOutput } from './dto/create-token.output';
 import { ConfigService } from '@nestjs/config';
-import { JwtClientConstants } from './jwt.client.constants';
+import { JwtAdapterConstants } from './jwt.adapter.constants';
 
 @Injectable()
-export class JwtClient implements JwtClientInterface {
-  private readonly logger = new Logger(JwtClient.name);
+export class JwtAdapter implements JwtAdapterInterface {
+  private readonly logger = new Logger(JwtAdapter.name);
 
   private readonly jwtSecret: string;
   private readonly jwtTTL: number;
@@ -17,8 +17,8 @@ export class JwtClient implements JwtClientInterface {
     private readonly jwtService: JwtService,
     private readonly configService: ConfigService,
   ) {
-    this.jwtSecret = this.configService.get(JwtClientConstants.SECRET);
-    this.jwtTTL = Number(this.configService.get(JwtClientConstants.TTL));
+    this.jwtSecret = this.configService.get(JwtAdapterConstants.SECRET);
+    this.jwtTTL = Number(this.configService.get(JwtAdapterConstants.TTL));
   }
 
   async createToken(payload: CreateTokenInput): Promise<CreateTokenOutput> {

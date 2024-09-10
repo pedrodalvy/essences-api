@@ -1,13 +1,13 @@
 import { mock } from 'jest-mock-extended';
 import { ConfigService } from '@nestjs/config';
 import { Test } from '@nestjs/testing';
-import { JwtClientInterface } from '../jwt.client.interface';
-import { JwtClient } from '../jwt.client';
-import { JwtClientConstants } from '../jwt.client.constants';
+import { JwtAdapterInterface } from '../jwt.adapter.interface';
+import { JwtAdapter } from '../jwt.adapter';
+import { JwtAdapterConstants } from '../jwt.adapter.constants';
 import { JwtService } from '@nestjs/jwt';
 
-describe('JwtClient', () => {
-  let jwtClient: JwtClientInterface;
+describe('JwtAdapter', () => {
+  let jwtAdapter: JwtAdapterInterface;
   const jwtService = mock<JwtService>();
 
   const mockedSecret = 'mocked-secret';
@@ -15,20 +15,20 @@ describe('JwtClient', () => {
 
   const configService = mock<ConfigService>({
     get: jest.fn((key: string) => {
-      return key === JwtClientConstants.TTL ? mockedTTL : mockedSecret;
+      return key === JwtAdapterConstants.TTL ? mockedTTL : mockedSecret;
     }),
   });
 
   beforeEach(async () => {
     const app = await Test.createTestingModule({
       providers: [
-        JwtClient,
+        JwtAdapter,
         { provide: ConfigService, useValue: configService },
         { provide: JwtService, useValue: jwtService },
       ],
     }).compile();
 
-    jwtClient = app.get<JwtClientInterface>(JwtClient);
+    jwtAdapter = app.get<JwtAdapterInterface>(JwtAdapter);
   });
 
   describe('createToken', () => {
@@ -39,7 +39,7 @@ describe('JwtClient', () => {
       jwtService.signAsync.mockResolvedValueOnce(expectedToken);
 
       // ACT
-      const output = await jwtClient.createToken(input);
+      const output = await jwtAdapter.createToken(input);
 
       // ASSERT
       expect(output).toEqual({ token: expectedToken, ttl: mockedTTL });
@@ -49,7 +49,7 @@ describe('JwtClient', () => {
   describe('verifyToken', () => {
     it('should return true when verify token with success', async () => {
       // ACT
-      const output = await jwtClient.verifyToken('any-token');
+      const output = await jwtAdapter.verifyToken('any-token');
 
       // ASSERT
       expect(output).toEqual(true);
@@ -60,7 +60,7 @@ describe('JwtClient', () => {
       jwtService.verifyAsync.mockRejectedValueOnce(new Error('any-error'));
 
       // ACT
-      const output = await jwtClient.verifyToken('any-token');
+      const output = await jwtAdapter.verifyToken('any-token');
 
       // ASSERT
       expect(output).toEqual(false);

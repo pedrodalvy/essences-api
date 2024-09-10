@@ -1,6 +1,6 @@
 import { Module } from '@nestjs/common';
 import { EssencesModule } from '../modules/essences/essences.module';
-import { ClientsModule } from '../infra/clients/clients.module';
+import { ClientsModule } from '../infra/adapters/clients.module';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { CacheInterceptor, CacheModule } from '@nestjs/cache-manager';
 import { RedisClientOptions } from 'redis';

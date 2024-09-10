@@ -1,16 +1,16 @@
 import { ListEssencesOutputInterface } from './dto/list-essences.output.interface';
-import { GBClientInterface } from './gb.client.interface';
+import { GbClientAdapterInterface } from './gb-client.adapter.interface';
 import { HttpStatus, Injectable, InternalServerErrorException, Logger, NotFoundException } from '@nestjs/common';
 import { HttpService } from '@nestjs/axios';
 import { ConfigService } from '@nestjs/config';
-import { GBClientConstants } from './gb.client.constants';
+import { GbClientAdapterConstants } from './gb-client.adapter.constants';
 import { firstValueFrom } from 'rxjs';
 import { DescribeEssenceOutputInterface } from './dto/describe-essence.output.interface';
 import { AxiosError } from 'axios';
 
 @Injectable()
-export class GBClient implements GBClientInterface {
-  private readonly logger = new Logger(GBClient.name);
+export class GbClientAdapter implements GbClientAdapterInterface {
+  private readonly logger = new Logger(GbClientAdapter.name);
 
   private readonly authToken: string;
   private readonly baseUrl: string;
@@ -19,8 +19,8 @@ export class GBClient implements GBClientInterface {
     private readonly httpService: HttpService,
     private readonly configService: ConfigService,
   ) {
-    this.authToken = this.configService.get(GBClientConstants.AUTH_TOKEN);
-    this.baseUrl = this.configService.get(GBClientConstants.BASE_URL);
+    this.authToken = this.configService.get(GbClientAdapterConstants.AUTH_TOKEN);
+    this.baseUrl = this.configService.get(GbClientAdapterConstants.BASE_URL);
   }
 
   async listEssences(): Promise<ListEssencesOutputInterface[]> {
