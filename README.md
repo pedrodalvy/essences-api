@@ -50,13 +50,15 @@ Crie um arquivo `.env` na raiz do projeto utilizando o `.env.example` como base.
 | GB_BASE_URL         | URL da API do GB                             | `http://...`                                                    |
 | GB_AUTH_TOKEN       | Token de autenticação do GB                  | Token em formato Base64                                         |
 | CACHE_TTL_IN_MS     | Tempo de expiração do cache em milissegundos | `1800000` # 30 minutos                                          |
-| REDIS_HOST          | Host do Redis                                | `redis` # Valor informado no docker-compose                     |
+| REDIS_HOST          | Host do Redis                                | `cache` # Valor informado no docker-compose                     |
 | REDIS_PORT          | Porta do Redis                               | `6379` # Valor informado no docker-compose                      |
+| REDIS_USERNAME      | Usuário do Redis                             | Usuário utilizado apenas em ambiente de produção                |
+| REDIS_PASSWORD      | Password do Redis                            | Password utilizado apenas em ambiente de produção               |
 | JWT_SECRET          | Secret usado para gerar o token JWT          | `any-secret`                                                    |
 | JWT_TTL_IN_SECONDS  | Tempo de expiração do token JWT              | `3600` # 1 hora                                                 |
 | THROTTLER_TTL_IN_MS | Tempo de expiração do limiter                | `60000` # 1 minuto (60 * 1000)                                  |
 | THROTTLER_LIMIT     | Limite de requisições por minuto             | `5` # 5 requisições por minuto                                  |
-| THROTTLER_STORE_URL | URL do Redis para armazenar o limiter        | `redis`://redis:6379 # Valor informado no docker-compose        |
+| THROTTLER_STORE_URL | URL do Redis para armazenar o limiter        | `redis://cache:6379` # Valor informado no docker-compose        |
 | LOG_LEVEL           | Nível de log                                 | [`fatal`, `error`, `warn`, `info`, `debug`, `trace`, `silence`] |
 
 > **Nota**: Certifique-se de utilizar valores reais para as variáveis `GB_BASE_URL` e `GB_AUTH_TOKEN`.

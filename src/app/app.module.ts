@@ -40,6 +40,8 @@ import { randomUUID } from 'crypto';
         ttl: Number(configService.get(AppConstants.CACHE_TTL)),
         host: configService.get(AppConstants.REDIS_HOST),
         port: Number(configService.get(AppConstants.REDIS_PORT)),
+        username: configService.get(AppConstants.REDIS_USERNAME),
+        password: configService.get(AppConstants.REDIS_PASSWORD),
       }),
     }),
     ThrottlerModule.forRootAsync({
