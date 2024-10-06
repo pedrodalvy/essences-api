@@ -22,8 +22,6 @@ Api Criada com o propósito de simular um gateway para o GB API. A API contém a
 
 A documentação completa da API está disponível no [Design Document](https://github.com/pedrodalvy/essences-api/blob/main/docs/DesignDocument.md) do projeto.
 
-> Uma instância temporária da aplicação foi criada no GCP. O Swagger pode ser acessado em `https://essences-api-539666516417.us-central1.run.app/docs`, permitindo testes tanto por ele quanto diretamente via`https://essences-api-539666516417.us-central1.run.app/api`.
-
 ## Pré-requisitos
 
 - [Node.js](https://nodejs.org/) (Versão 22 ou superior)
